@@ -297,7 +297,7 @@ class InvertTextNormalization(EncoderDecoderModel):
             tgt=None,
             **kwargs,
     ):
-        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        return_dict = return_dict if return_dict is not None else self.config.return_dict
 
         kwargs_encoder = {argument: value for argument, value in kwargs.items() if not argument.startswith("decoder_")}
 
@@ -430,7 +430,7 @@ class DecoderInvertTextNormalization(RobertaForCausalLM):
             output_hidden_states=None,
             return_dict=None,
     ):
-        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        return_dict = return_dict if return_dict is not None else self.config.return_dict
         if labels is not None:
             use_cache = False
 
@@ -500,9 +500,7 @@ def init_model():
     # sensible parameters for beam search
     # set decoding params
     roberta.generation_config.max_length = 200
-    roberta.generation_config.early_stopping = True
     roberta.generation_config.no_repeat_ngram_size = 3
-    roberta.generation_config.length_penalty = 2.0
     roberta.generation_config.num_beams = 1
     roberta.config.vocab_size = roberta.config.encoder.vocab_size
 
