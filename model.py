@@ -101,12 +101,13 @@ class InvertTextNormalization(EncoderDecoderModel):
             if not isinstance(config, self.config_class):
                 raise ValueError(f"Config: {config} has to be of type {self.config_class}")
 
-        if config.decoder.cross_attention_hidden_size is not None:
-            if config.decoder.cross_attention_hidden_size != config.encoder.hidden_size:
+        cross_dim = getattr(config.decoder, "cross_attention_hidden_size", None)  # removed from base config in new transformers
+        if cross_dim is not None:
+            if cross_dim != config.encoder.hidden_size:
                 raise ValueError(
                     "If `cross_attention_hidden_size` is specified in the decoder's configuration, "
                     "it has to be equal to the encoder's `hidden_size`. "
-                    f"Got {config.decoder.cross_attention_hidden_size} for `config.decoder.cross_attention_hidden_size` "
+                    f"Got {cross_dim} for `config.decoder.cross_attention_hidden_size` "
                     f"and {config.encoder.hidden_size} for `config.encoder.hidden_size`."
                 )
 
@@ -142,7 +143,7 @@ class InvertTextNormalization(EncoderDecoderModel):
         # encoder outputs might need to be projected to different dimension for decoder
         if (
                 self.encoder.config.hidden_size != self.decoder.config.hidden_size
-                and self.decoder.config.cross_attention_hidden_size is None
+                and getattr(self.decoder.config, "cross_attention_hidden_size", None) is None
         ):
             self.enc_to_dec_proj = torch.nn.Linear(self.encoder.config.hidden_size, self.decoder.config.hidden_size)
 
@@ -329,7 +330,7 @@ class InvertTextNormalization(EncoderDecoderModel):
                                                                             spoken_idx)
         if (
                 self.encoder.config.hidden_size != self.decoder.config.hidden_size
-                and self.decoder.config.cross_attention_hidden_size is None
+                and getattr(self.decoder.config, "cross_attention_hidden_size", None) is None
         ):
             encoder_hidden_states = self.enc_to_dec_proj(encoder_hidden_states)
 
