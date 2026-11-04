@@ -67,6 +67,6 @@ if __name__ == "__main__":
         processing_class=tokenizer
     )
     trainer.train()
-    trainer.evaluate()
-    trainer.save_model(checkpoint_path)
+    # trainer.evaluate()
+    # trainer.save_model(checkpoint_path)
     # trainer.evaluate()
