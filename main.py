@@ -29,7 +29,7 @@ if __name__ == "__main__":
         output_dir=checkpoint_path,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
-        evaluation_strategy="steps",
+        eval_strategy="steps",
         save_strategy="steps",
         learning_rate=2e-5,
         gradient_accumulation_steps=1,
