@@ -1,4 +1,5 @@
 from transformers import Seq2SeqTrainingArguments
+import argparse
 import os
 import model
 import preprocess
@@ -13,9 +14,15 @@ if __name__ == "__main__":
 
     data_collator = preprocess.DataCollatorInvertTextNormalization(tokenizer, model=roberta)
 
-    num_epochs = 15
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--epoch", type=int, default=15)
+    parser.add_argument("--batch_size", type=int, default=8)
+    parser.add_argument("--lr", type=float, default=2e-5)
+    args = parser.parse_args()
+
+    num_epochs = args.epoch
     checkpoint_path = "./checkpoints"
-    batch_size = 8
+    batch_size = args.batch_size
     """
     eval_accumulation_steps (int, optional): 
             Number of predictions steps to accumulate the output tensors for, before moving the results to the 
@@ -31,7 +38,7 @@ if __name__ == "__main__":
         per_device_eval_batch_size=batch_size,
         eval_strategy="steps",
         save_strategy="steps",
-        learning_rate=2e-5,
+        learning_rate=args.lr,
         gradient_accumulation_steps=1,
         predict_with_generate=True,
         # save_total_limit=2,
