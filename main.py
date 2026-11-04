@@ -40,11 +40,13 @@ if __name__ == "__main__":
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
         eval_strategy="steps",
-        save_strategy="epoch",
+        save_strategy="steps",  # must match eval_strategy for load_best_model_at_end
+        save_steps=2 * steps_per_epoch,
+        save_total_limit=1,  # keeps only the best checkpoint (the latest one may also be kept)
+        load_best_model_at_end=True,  # default metric: eval_loss
         learning_rate=args.lr,
         gradient_accumulation_steps=1,
         predict_with_generate=True,
-        # save_total_limit=2,
         do_train=True,
         do_eval=True,
         logging_steps=5000,
