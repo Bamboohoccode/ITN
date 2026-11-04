@@ -55,7 +55,7 @@ if __name__ == "__main__":
         train_dataset=dataset['train'].shard(50, 0),
         eval_dataset=dataset['valid'],
         data_collator=data_collator,
-        tokenizer=tokenizer
+        processing_class=tokenizer
     )
     trainer.train()
     trainer.evaluate()
