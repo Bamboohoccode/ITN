@@ -499,11 +499,11 @@ def init_model():
 
     # sensible parameters for beam search
     # set decoding params
-    roberta.config.max_length = 200
-    roberta.config.early_stopping = True
-    roberta.config.no_repeat_ngram_size = 3
-    roberta.config.length_penalty = 2.0
-    roberta.config.num_beams = 1
+    roberta.generation_config.max_length = 200
+    roberta.generation_config.early_stopping = True
+    roberta.generation_config.no_repeat_ngram_size = 3
+    roberta.generation_config.length_penalty = 2.0
+    roberta.generation_config.num_beams = 1
     roberta.config.vocab_size = roberta.config.encoder.vocab_size
 
     return roberta, tokenizer
