@@ -255,21 +255,8 @@ class InvertTextNormalization(EncoderDecoderModel):
                                     False - return a plain tuple.
     """
 
-    def prepare_inputs_for_generation(
-            self, input_ids, past=None, attention_mask=None, use_cache=None, encoder_outputs=None, **kwargs
-    ):
-        decoder_inputs = self.decoder.prepare_inputs_for_generation(input_ids, past=past)
-        # print("decoder_input_ids: ", decoder_inputs["input_ids"])
-        decoder_attention_mask = decoder_inputs["attention_mask"] if "attention_mask" in decoder_inputs else None
-        input_dict = {
-            "attention_mask": attention_mask,
-            "decoder_attention_mask": decoder_attention_mask,
-            "decoder_input_ids": decoder_inputs["input_ids"],
-            "encoder_outputs": encoder_outputs,
-            "past_key_values": decoder_inputs["past_key_values"],
-            "use_cache": use_cache,
-        }
-        return input_dict
+    # prepare_inputs_for_generation override removed: it used the old `past` API and broke on transformers 5.x
+    # (KeyError 'past_key_values'); EncoderDecoderModel's own implementation does the same job in both versions.
 
     def forward(
             self,
