@@ -7,11 +7,15 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--checkpoint_path", default="checkpoints/checkpoint-18740")
+parser.add_argument("--checkpoint_path", default=None, help="fine-tuned checkpoint; omit for the untrained base model")
 args = parser.parse_args()
 
-tokenizer = model.init_tokenizer()
-roberta = InvertTextNormalization.from_pretrained(args.checkpoint_path, cache_dir=model.cache_dir)
+if args.checkpoint_path is None:
+    roberta, tokenizer = model.init_model()
+else:
+    tokenizer = model.init_tokenizer()
+    roberta = InvertTextNormalization.from_pretrained(args.checkpoint_path, cache_dir=model.cache_dir)
+roberta.eval()
 
 list_inputs = ['ngày chín tháng một năm một chín bốn lăm nạn đói bùng phát ở Việt Nam và ảnh hưởng tới sáu mươi phần trăm dân',
             'tôi làm việc ở Khoa Khoa học và Kỹ thuật Máy tính và hôm nay tôi đã chấm được hai ngàn không trăm hai mươi ba bài',
