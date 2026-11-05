@@ -8,6 +8,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--checkpoint_path", default=None, help="fine-tuned checkpoint; omit for the untrained base model")
+parser.add_argument("--input", nargs="+", default=None, help="one or more sentences to convert; omit to run the built-in examples")
 args = parser.parse_args()
 
 if args.checkpoint_path is None:
@@ -41,7 +42,7 @@ input  : ngày chín tháng một năm một chín bốn lăm nạn đói bùng 
 output : ngày 9/1/1945 nạn đói bùng phát ở Việt Nam và ảnh hưởng tới 60 % dân
 """
 
-for input_str in list_inputs:
+for input_str in (args.input or list_inputs):
     inputs = tokenizer([input_str])
     input_ids = inputs['input_ids']
     attention_mask = inputs['attention_mask']
