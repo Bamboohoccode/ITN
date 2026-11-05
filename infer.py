@@ -14,7 +14,18 @@ if args.checkpoint_path is None:
     roberta, tokenizer = model.init_model()
 else:
     tokenizer = model.init_tokenizer()
-    roberta = InvertTextNormalization.from_pretrained(args.checkpoint_path, cache_dir=model.cache_dir)
+    # Not from_pretrained: transformers 5.x crashes in mark_tied_weights_as_initialized ("no attribute `cls`") for the custom decoder.
+    from safetensors.torch import load_file
+    from transformers import GenerationConfig
+    from model_config import InvertTextNormalizationConfig
+    roberta = InvertTextNormalization(InvertTextNormalizationConfig.from_pretrained(args.checkpoint_path))
+    print(roberta.load_state_dict(load_file(os.path.join(args.checkpoint_path, "model.safetensors")), strict=False))
+    roberta.tie_weights()  # lm_head is tied to the embeddings and absent from the checkpoint
+    try:
+        roberta.generation_config = GenerationConfig.from_pretrained(args.checkpoint_path)
+    except OSError:
+        roberta.generation_config.max_length = 200
+        roberta.generation_config.no_repeat_ngram_size = 3
 roberta.eval()
 
 list_inputs = ['ngày chín tháng một năm một chín bốn lăm nạn đói bùng phát ở Việt Nam và ảnh hưởng tới sáu mươi phần trăm dân',
