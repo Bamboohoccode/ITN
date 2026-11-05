@@ -1,3 +1,4 @@
+import argparse
 import torch
 import model
 from model import InvertTextNormalization
@@ -5,8 +6,12 @@ import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--checkpoint_path", default="checkpoints/checkpoint-18740")
+args = parser.parse_args()
+
 tokenizer = model.init_tokenizer()
-roberta = InvertTextNormalization.from_pretrained('checkpoints/checkpoint-18740', cache_dir=model.cache_dir)
+roberta = InvertTextNormalization.from_pretrained(args.checkpoint_path, cache_dir=model.cache_dir)
 
 list_inputs = ['ngày chín tháng một năm một chín bốn lăm nạn đói bùng phát ở Việt Nam và ảnh hưởng tới sáu mươi phần trăm dân',
             'tôi làm việc ở Khoa Khoa học và Kỹ thuật Máy tính và hôm nay tôi đã chấm được hai ngàn không trăm hai mươi ba bài',
